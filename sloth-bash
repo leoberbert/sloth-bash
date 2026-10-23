@@ -341,7 +341,13 @@ take() {
     return 1
   fi
   local arg="$1"
+  local is_url=0
   if [[ "$arg" =~ ^https?:// ]]; then
+    is_url=1
+  elif [[ "$arg" =~ ^(ssh|git|ftp):// ]] || [[ "$arg" =~ ^[^/@:]+@[^/:]+:.+ ]]; then
+    is_url=1
+  fi
+  if [[ "$is_url" -eq 1 ]]; then
     if [[ "$arg" == *.git ]]; then
       git clone "$arg" || return $?
       local dir=$(basename "$arg" .git)
